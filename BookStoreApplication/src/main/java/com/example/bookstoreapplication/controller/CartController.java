@@ -7,6 +7,7 @@ import com.example.bookstoreapplication.model.Cart;
 import com.example.bookstoreapplication.service.CartService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,13 +22,15 @@ public class CartController {
     CartService cartService;
 
     @PostMapping("/insert")
-    public Cart insert(@Valid @RequestBody CartDto cartDto){
-        return cartService.insert(cartDto);
+    public ResponseEntity<ResponseDto> insert(@Valid @RequestBody CartDto cartDto){
+        ResponseDto responseDto = new ResponseDto("New Cart created.",cartService.insert(cartDto));
+        return new ResponseEntity<>(responseDto, HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/getAll")
-    public List<Cart> getAll(){
-        return cartService.getAll();
+    public ResponseEntity<ResponseDto> getAll(){
+        ResponseDto responseDto = new ResponseDto("Get All Cart details.",cartService.getAll());
+        return new ResponseEntity<>(responseDto, HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/deleteById/{cartId}")
@@ -36,8 +39,9 @@ public class CartController {
     }
 
     @PutMapping("/updateById/{cartId}")
-    public Cart updateById(@PathVariable int cartId, @Valid @RequestBody CartDto cartDto){
-        return  cartService.updateById(cartId, cartDto);
+    public ResponseEntity<ResponseDto> updateById(@PathVariable int cartId, @Valid @RequestBody CartDto cartDto){
+        ResponseDto responseDto = new ResponseDto("Get All Cart details.",cartService.updateById(cartId, cartDto));
+        return new ResponseEntity<>(responseDto, HttpStatus.ACCEPTED) ;
     }
 
     @PutMapping("/updateQuantity/{cartId}")

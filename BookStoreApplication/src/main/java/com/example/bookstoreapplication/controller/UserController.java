@@ -4,10 +4,10 @@ package com.example.bookstoreapplication.controller;
 import com.example.bookstoreapplication.dto.LoginDto;
 import com.example.bookstoreapplication.dto.ResponseDto;
 import com.example.bookstoreapplication.dto.UserDto;
-import com.example.bookstoreapplication.model.User;
 import com.example.bookstoreapplication.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,33 +21,39 @@ public class UserController {
     UserService userService;
 
     @PostMapping("/register")
-    public User registerUser(@Valid @RequestBody UserDto userDto) {
-        return userService.registerUser(userDto);
+    public ResponseEntity<ResponseDto> registerUser(@Valid @RequestBody UserDto userDto) {
+        ResponseDto responseDto = new ResponseDto("New user added.",userService.registerUser(userDto));
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     @GetMapping("/getAll")
-    public List<User> showAll() {
-        return userService.showAllUser();
+    public ResponseEntity<ResponseDto> showAll() {
+        ResponseDto responseDto = new ResponseDto("Get all users.",userService.showAllUser());
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     @GetMapping("/getById/{userId}")
-    public User getById(@PathVariable int userId) {
-        return userService.getbyID(userId);
+    public ResponseEntity<ResponseDto> getById(@PathVariable int userId) {
+        ResponseDto responseDto = new ResponseDto("Get user by id."+userId,userService.getbyID(userId));
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     @GetMapping("/getByEmailId")
-    public User getById(@RequestParam String emailId) {
-        return userService.getbyEmailID(emailId);
+    public ResponseEntity<ResponseDto> getById(@RequestParam String emailId) {
+        ResponseDto responseDto = new ResponseDto("Get user by email."+emailId,userService.getbyEmailID(emailId));
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     @PutMapping("/resetPassword")
-    public User forgotPassword(@RequestParam String emailId, @RequestParam String NewPassword) {
-        return userService.forgotPassword(emailId, NewPassword);
+    public ResponseEntity<ResponseDto> forgotPassword(@RequestParam String emailId, @RequestParam String NewPassword) {
+        ResponseDto responseDto = new ResponseDto("Password Reset Done.",userService.forgotPassword(emailId, NewPassword));
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     @PutMapping("/changePassword")
-    public User changePassword(@RequestBody LoginDto loginDto, @RequestParam String NewPassword) {
-        return userService.changePassword(loginDto, NewPassword);
+    public ResponseEntity<ResponseDto> changePassword(@RequestBody LoginDto loginDto, @RequestParam String NewPassword) {
+        ResponseDto responseDto = new ResponseDto("Password Changed.",userService.changePassword(loginDto, NewPassword));
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     @PutMapping("/updateUserByEmailId")
@@ -66,7 +72,8 @@ public class UserController {
     }
 
     @GetMapping("/getByToken/{token}")
-    public User getUserByToken(@PathVariable String token){
-        return  userService.getUserByToken(token);
+    public ResponseEntity<ResponseDto> getUserByToken(@PathVariable String token){
+        ResponseDto responseDto = new ResponseDto("Get User by token.",userService.getUserByToken(token));
+        return  new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 }

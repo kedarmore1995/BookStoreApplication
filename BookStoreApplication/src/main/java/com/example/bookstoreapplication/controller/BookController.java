@@ -2,7 +2,6 @@ package com.example.bookstoreapplication.controller;
 
 import com.example.bookstoreapplication.dto.BookDto;
 import com.example.bookstoreapplication.dto.ResponseDto;
-import com.example.bookstoreapplication.model.Book;
 import com.example.bookstoreapplication.service.BookService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/book")
@@ -20,13 +18,15 @@ public class BookController {
     BookService bookService;
 
     @PostMapping("/insert")
-    public ResponseEntity<Book> insert(@Valid @RequestBody BookDto bookDto){
-        return new ResponseEntity<>(bookService.insert(bookDto), HttpStatus.ACCEPTED);
+    public ResponseEntity<ResponseDto> insert(@Valid @RequestBody BookDto bookDto){
+        ResponseDto responseDto = new ResponseDto("New book added.", bookService.insert(bookDto));
+        return new ResponseEntity<>(responseDto, HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<Book>> getAllBooks(){
-        return new ResponseEntity<>(bookService.getAllBooks(),HttpStatus.ACCEPTED);
+    public ResponseEntity<ResponseDto> getAllBooks(){
+        ResponseDto responseDto = new ResponseDto("Get all books.",bookService.getAllBooks());
+        return new ResponseEntity<>(responseDto,HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/getById/{bookId}")
@@ -41,13 +41,15 @@ public class BookController {
     }
 
     @GetMapping("/searchByBookName")
-    public Book searchByBookName(@RequestParam String bookName){
-        return bookService.searchByBookName(bookName);
+    public ResponseEntity<ResponseDto> searchByBookName(@RequestParam String bookName){
+        ResponseDto responseDto = new ResponseDto("Book by Name: " + bookName, bookService.searchByBookName(bookName));
+        return new ResponseEntity<>(responseDto,HttpStatus.FOUND);
     }
 
     @PutMapping("/updateBook/{bookId}")
-    public Book updateBookById(@PathVariable int bookId,@Valid @RequestBody BookDto bookDto){
-        return bookService.updateBookById(bookId,bookDto);
+    public ResponseEntity<ResponseDto> updateBookById(@PathVariable int bookId,@Valid @RequestBody BookDto bookDto){
+        ResponseDto responseDto = new ResponseDto("Updated Book by Id: " + bookId, bookService.updateBookById(bookId, bookDto));
+        return new ResponseEntity<>(responseDto,HttpStatus.OK);
     }
 
     @PutMapping("/updateQuantity/{bookId}")
@@ -56,12 +58,14 @@ public class BookController {
     }
 
     @GetMapping("/sortAsc")
-    public List<Book> sortAsc(){
-        return bookService.sortAsc();
+    public ResponseEntity<ResponseDto> sortAsc(){
+        ResponseDto responseDto = new ResponseDto("Sorting books ascending by bookName",bookService.sortAsc());
+        return new ResponseEntity<>(responseDto,HttpStatus.OK);
     }
 
     @GetMapping("/sortDesc")
-    public List<Book> sortDesc(){
-        return bookService.sortDesc();
+    public ResponseEntity<ResponseDto> sortDesc(){
+        ResponseDto responseDto = new ResponseDto("Sorting books descending by bookName",bookService.sortDesc());
+        return new ResponseEntity<>(responseDto,HttpStatus.OK);
     }
 }
