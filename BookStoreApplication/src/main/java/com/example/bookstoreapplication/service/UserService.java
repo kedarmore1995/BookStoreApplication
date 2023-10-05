@@ -33,7 +33,7 @@ public class UserService implements iUserService {
         userRepo.save(user);
         String token = tokenUtil.createToken(user.getUserID());
         System.out.println(token);
-        emailSenderService.sendEmail("user@gmail.com", "Registration Done Successfully.", "New user has been added. The name of the person is: " + user.getFirstName() +
+        emailSenderService.sendEmail(user.getEmail(), "Registration Done Successfully.", "New user has been added. The name of the person is: " + user.getFirstName() +
                 '\n' + "To get the details click the link: http://localhost:8080/user/getByToken/" + token);
         return user;
     }
@@ -72,13 +72,12 @@ public class UserService implements iUserService {
         if (user != null) {
             user.setPassword(NewPassword);
             userRepo.save(user);
-            emailSenderService.sendEmail("user@gmail.com", "Password reset done Successfully.", "The password has been reset.");
+            emailSenderService.sendEmail(user.getEmail(), "Password reset done Successfully.", "The password has been reset.");
             return user;
         } else {
             throw new UserNotFoundException("EmailId Incorrect...!");
         }
     }
-
 
 //    put
 //    update old password with new password
@@ -90,7 +89,7 @@ public class UserService implements iUserService {
             if (user.getPassword().equals(loginDto.getPassword())) {
                 user.setPassword(NewPassword);
                 userRepo.save(user);
-                emailSenderService.sendEmail("user@gmail.com", "Password changed Successfully.", "The password has been changed successfully.");
+                emailSenderService.sendEmail(user.getEmail(), "Password changed Successfully.", "The password has been changed successfully.");
                 return user;
             } else {
                 throw new PasswordsNotMatchingException("Old Password is Incorrect...!");
@@ -99,7 +98,6 @@ public class UserService implements iUserService {
             throw new UserNotFoundException("User not found. Check emailId...!");
         }
     }
-
 
 //    put
 //    update user by emailId
@@ -115,7 +113,7 @@ public class UserService implements iUserService {
             user.setFirstName(userDto.firstName);
             user.setLastName(userDto.lastName);
             userRepo.save(user);
-            emailSenderService.sendEmail("user@gmail.com", "User details update", "The password has been updated successfully.");
+            emailSenderService.sendEmail(user.getEmail(), "User details update", "The password has been updated successfully.");
             ResponseDto responseDto = new ResponseDto("Put call successful", user);
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
         } else {
@@ -142,9 +140,10 @@ public class UserService implements iUserService {
 //    if user id matches delete the user
     public ResponseEntity<ResponseDto> deleteUserById(int userId) {
         if (userRepo.existsById(userId)) {
+            String toEmail= userRepo.findById(userId).get().getEmail();
             userRepo.deleteById(userId);
             ResponseDto responseDto = new ResponseDto("User Deleted Successfully", false);
-            emailSenderService.sendEmail("user@gmail.com", "User deleted Successfully.", "The user has been deleted.");
+            emailSenderService.sendEmail(toEmail, "User deleted Successfully.", "The user has been deleted.");
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
         } else {
             throw new UserNotFoundException("UserId Entered is Incorrect.");
