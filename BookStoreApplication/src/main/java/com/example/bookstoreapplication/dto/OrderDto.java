@@ -16,7 +16,4 @@ public class OrderDto {
     public int userID;
     @Min(1)
     public int bookID;
-    @NotNull
-    @AssertFalse
-    public boolean cancel;
 }

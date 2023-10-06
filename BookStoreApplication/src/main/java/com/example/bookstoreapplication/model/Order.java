@@ -31,6 +31,6 @@ public class Order {
         this.address=orderDto.address;
         this.userID=orderDto.userID;
         this.bookID=orderDto.bookID;
-        this.cancel=orderDto.cancel;
+
     }
 }

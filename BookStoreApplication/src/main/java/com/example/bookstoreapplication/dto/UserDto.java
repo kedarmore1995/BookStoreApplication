@@ -5,11 +5,9 @@ import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 
 public class UserDto {
-    @NotEmpty
-    @Size(min = 3, max= 10)
+    @Pattern(regexp = "[A-Z][a-z]{2,}", message = "First letter should be capital, with min 3 characters")
     public String firstName;
-    @NotEmpty
-    @Size(min = 3, max= 10)
+    @Pattern(regexp = "[A-Z][a-z]{2,}", message = "First letter should be capital, with min 3 characters")
     public String lastName;
     @Email
     public String email;
